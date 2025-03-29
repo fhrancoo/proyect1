@@ -1,5 +1,5 @@
 ---
-import Welcome from '../components/Welcome.astro';
+// import Welcome from '../components/Welcome.astro';
 import Layout from '../layouts/Layout.astro';
 
 // Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
@@ -7,5 +7,113 @@ import Layout from '../layouts/Layout.astro';
 ---
 
 <Layout>
-	<Welcome />
+  <!-- <Welcome /> -->
+
+  <h1>PROYECTO</h1>
+
+  <button id="getAllUser"> OBTENER USUARIOS </button>
+
+  <button id="getUser"> OBTENER UN USUARIO </button>
+
+  <button id="addUser"> CREAR USUARIO </button>
+
+  <button id="updateUser"> ACTUALIZAR USUARIO </button>
+
+  <button id="deleteUser"> BORRAR USUARIO </button>
 </Layout>
+
+<script>
+  const getAllUser = document.getElementById('getAllUser');
+
+  getAllUser?.addEventListener('click', () => {
+    //get all user
+    fetch('http://127.0.0.1:3000/user')
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+  });
+
+  const getUser = document.getElementById('getUser');
+
+  getUser?.addEventListener('click', () => {
+    //get all user
+    fetch('http://127.0.0.1:3000/user/2')
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+  });
+
+  const deleteUser = document.getElementById('deleteUser');
+
+  deleteUser?.addEventListener('click', () => {
+    //get all user
+    fetch('http://127.0.0.1:3000/user/2', {
+      method: 'DELETE',
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+  });
+
+  const addUser = document.getElementById('addUser');
+
+  const newUser = {
+    name: 'TEST',
+    lastname: 'TTTTT',
+    age: 11,
+  };
+
+  addUser?.addEventListener('click', () => {
+    //get all user
+    fetch('http://127.0.0.1:3000/user', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(newUser),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+  });
+
+  const updateUser = document.getElementById('updateUser');
+
+  const UserMod = {
+    name: 'CAMBIE EL NAME',
+  };
+
+  updateUser?.addEventListener('click', () => {
+    //get all user
+    fetch('http://127.0.0.1:3000/user/2', {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(UserMod),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+  });
+</script>
