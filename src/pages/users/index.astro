@@ -1,8 +1,10 @@
 ---
 import Layout from "../../layouts/Layout.astro";
+import Table from "../../components/users/Table.svelte";
 ---
 
 <Layout>
     <h1 class="text-3xl font-bold underline">Todos los usuarios</h1>
 
+    <Table client:only="svelte" />
 </Layout>
