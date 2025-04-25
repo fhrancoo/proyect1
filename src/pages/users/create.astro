@@ -1,8 +1,9 @@
 ---
 import Layout from "../../layouts/Layout.astro";
+import Create from "../../components/users/Create.svelte";
 ---
 
 <Layout>
     <h1 class="text-3xl font-bold underline">Crear usuario</h1>
-    
+    <Create client:only="svelte" />
 </Layout>
