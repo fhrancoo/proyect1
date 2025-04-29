@@ -1,5 +1,6 @@
 <script lang="ts">
     import { onMount } from "svelte";
+    import Create from "./Create.svelte"; // Ajusta la ruta si es necesario
 
     interface User {
         id: number;
@@ -19,26 +20,60 @@
     let data = $state([]) as User[];
 
     onMount(async () => {
+        await getAllUsers();
+    });
+
+    const getAllUsers = async () => {
         data = await fetch("http://127.0.0.1:3000/user").then((res) =>
             res.json(),
         );
-    });
+    };
+
+    let showModal = $state(false);
+
+    const openModal = () => {
+        showModal = true;
+    };
+
+    const closeModal = () => {
+        showModal = false;
+    };
 </script>
 
-<table class="min-w-full bg-white border border-gray-300 shadow-sm rounded-lg overflow-hidden">
+<Create {showModal} {closeModal} {getAllUsers} />
+
+<button
+    onclick={openModal}
+    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+>
+    Crear Usuario
+</button>
+
+<table
+    class="min-w-full bg-white border border-gray-300 shadow-sm rounded-lg overflow-hidden"
+>
     <thead class="bg-gray-50">
         <tr>
             {#each headers as header}
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">{header}</th>
+                <th
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b"
+                    >{header}</th
+                >
             {/each}
         </tr>
     </thead>
     <tbody class="bg-white divide-y divide-gray-200">
         {#each data as user}
             <tr class="hover:bg-gray-50 transition-colors duration-200">
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{user.name}</td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{user.email}</td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{user.role}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+                    >{user.name}</td
+                >
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+                    >{user.email}</td
+                >
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+                    >{user.role}</td
+                >
             </tr>
         {/each}
     </tbody>
