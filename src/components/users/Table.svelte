@@ -1,6 +1,8 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import Create from "./Create.svelte"; // Ajusta la ruta si es necesario
+    import Create from "./Create.svelte";
+    import Edit from "./Edit.svelte";
+    import Delete from "./Delete.svelte";
 
     interface User {
         id: number;
@@ -16,34 +18,61 @@
         bio: string;
     }
 
-    let headers = $state(["Nombre", "Email", "Rol"]);
-    let data = $state([]) as User[];
+    type ModalType = "create" | "edit" | "delete";
+
+    let headers = $state(["Nombre", "Email", "Rol", "Acciones"]);
+    let users = $state([]) as User[];
+    let user = $state(null) as User | null;
 
     onMount(async () => {
         await getAllUsers();
     });
 
     const getAllUsers = async () => {
-        data = await fetch("http://127.0.0.1:3000/user").then((res) =>
+        users = await fetch("http://127.0.0.1:3000/user").then((res) =>
             res.json(),
         );
     };
 
-    let showModal = $state(false);
+    let showModalCreate = $state(false);
+    let showModalEdit = $state(false);
+    let showModalDelete = $state(false);
 
-    const openModal = () => {
-        showModal = true;
+    const openModal = (name: ModalType) => {
+        switch (name) {
+            case "create":
+                showModalCreate = true;
+                break;
+            case "edit":
+                showModalEdit = true;
+                break;
+            case "delete":
+                showModalDelete = true;
+                break;
+        }
     };
 
-    const closeModal = () => {
-        showModal = false;
+    const closeModal = (name: ModalType) => {
+        switch (name) {
+            case "create":
+                showModalCreate = false;
+                break;
+            case "edit":
+                showModalEdit = false;
+                break;
+            case "delete":
+                showModalDelete = false;
+                break;
+        }
     };
 </script>
 
-<Create {showModal} {closeModal} {getAllUsers} />
+<Create {showModalCreate} {closeModal} {getAllUsers} />
+<Edit {showModalEdit} {closeModal} {getAllUsers} {user} />
+<Delete {showModalDelete} {closeModal} {getAllUsers} {user} />
 
 <button
-    onclick={openModal}
+    onclick={() => openModal("create")}
     class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
 >
     Crear Usuario
@@ -63,17 +92,37 @@
         </tr>
     </thead>
     <tbody class="bg-white divide-y divide-gray-200">
-        {#each data as user}
+        {#each users as item}
             <tr class="hover:bg-gray-50 transition-colors duration-200">
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
-                    >{user.name}</td
+                    >{item.name}</td
                 >
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
-                    >{user.email}</td
+                    >{item.email}</td
                 >
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
-                    >{user.role}</td
+                    >{item.role}</td
                 >
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <button
+                        onclick={() => {
+                            user = item;
+                            openModal("edit");
+                        }}
+                        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                    >
+                        Editar
+                    </button>
+                    <button
+                        onclick={() => {
+                            user = item;
+                            openModal("delete");
+                        }}
+                        class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                    >
+                        Eliminar
+                    </button>
+                </td>
             </tr>
         {/each}
     </tbody>

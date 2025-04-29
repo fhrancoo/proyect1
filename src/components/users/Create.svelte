@@ -1,5 +1,5 @@
 <script lang="ts">
-    const { showModal, closeModal, getAllUsers } = $props();
+    const { showModalCreate, closeModal, getAllUsers } = $props();
 
     const handleSubmit = async (event: SubmitEvent) => {
         event.preventDefault();
@@ -15,12 +15,12 @@
             body: JSON.stringify(data),
         });
 
-        closeModal();
+        closeModal("create");
         await getAllUsers();
     };
 </script>
 
-{#if showModal}
+{#if showModalCreate}
     <div
         class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
     >
@@ -66,7 +66,7 @@
                     </button>
                     <button
                         type="button"
-                        onclick={closeModal}
+                        onclick={() => closeModal("create")}
                         class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                     >
                         Cerrar
